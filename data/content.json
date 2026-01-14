@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "seo": {
+    "title": "Masif Ahşap Paneller ve Uygulamalar",
+    "description": "Masif ahşap paneller; merdiven, mutfak tezgâhı, masa, sehpa ve özel projeler için üretim ve uygulama hizmetleri. Teklifinizi anında oluşturun.",
+    "keywords": [
+      "masif panel",
+      "ahşap panel",
+      "masif ahşap",
+      "merdiven basamağı",
+      "mutfak tezgahı",
+      "masa tablası",
+      "sehpa",
+      "ahşap uygulama"
+    ],
+    "ogImage": "/sample/og.svg",
+    "googleSiteVerification": "",
+    "gaMeasurementId": ""
+  },
+  "brand": {
+    "name": "SOM AHŞAP",
+    "tagline": "",
+    "city": "",
+    "phone": "+90 545 522 43 26",
+    "email": "koraytolgadurmus@gmail.com",
+    "whatsapp": "905455224326",
+    "logo": "/uploads/1768204754710-logo.png",
+    "logoHeight": 164,
+    "logoMaxWidth": 320
+  },
+  "theme": {
+    "colors": {
+      "background": "#fdfbf7",
+      "foreground": "#1b160f",
+      "surface": "#fffdf8",
+      "card": "#f6f3ef",
+      "muted": "#7d6a53",
+      "border": "rgba(27, 22, 15, 0.15)",
+      "accent": "#c28637",
+      "accentSoft": "#f5d8b4",
+      "danger": "#c74333",
+      "woodBark": "#2c1d11",
+      "woodCore": "#8b5d37",
+      "woodHalo": "#dab386"
+    },
+    "typography": {
+      "sans": "var(--font-inter)",
+      "display": "var(--font-playfair)"
+    }
+  },
+  "hero": {
+    "eyebrow": "",
+    "headline": "",
+    "subhead": "",
+    "ctaPrimaryLabel": "Teklif Hesapla",
+    "ctaPrimaryHref": "#hesapla",
+    "ctaSecondaryLabel": "Hızlı İletişim",
+    "ctaSecondaryHref": "#iletisim",
+    "highlights": [],
+    "note": "",
+    "heroImage": {
+      "src": "/sample/hero.svg",
+      "alt": "Masif ahşap panel dokusu"
+    },
+    "heroVideo": {
+      "url": "https://youtu.be/krx6JuQev6M"
+    },
+    "quickOptions": [
+      {
+        "label": "Kalite",
+        "placeholder": "Kalite seç",
+        "options": [
+          "AB",
+          "BB",
+          "CC",
+          "CD"
+        ]
+      },
+      {
+        "label": "Kullanım",
+        "placeholder": "Kullanım alanı",
+        "options": [
+          "Merdiven",
+          "Mutfak tezgâhı",
+          "Masa",
+          "Sehpa"
+        ]
+      },
+      {
+        "label": "Kalınlık",
+        "placeholder": "Kalınlık seç",
+        "options": [
+          "20 mm",
+          "30 mm",
+          "40 mm",
+          "50 mm"
+        ]
+      },
+      {
+        "label": "Teslim",
+        "placeholder": "Bölge seç",
+        "options": [
+          "İstanbul",
+          "Kocaeli",
+          "Yurtdışı"
+        ]
+      }
+    ]
+  },
+  "about": {
+    "heading": "Premium işçilik, doğru malzeme.",
+    "text": "Masif panel seçiminden yüzey korumaya kadar her adım, nihai ürünün dayanımı ve görünümü için kritiktir. Projeye göre doğru ağaç türü, kalite sınıfı ve kalınlık önerir; üretim ve uygulamada temiz işçilik sunarız.",
+    "bullets": [
+      "Panel seçimi: lif yönü, renk uyumu, kalite sınıfı",
+      "Üretim: kesim, kenar profili, zımpara, finish",
+      "Uygulama: ölçü, montaj altyapısı, birleşimler"
+    ],
+    "image": {
+      "src": "/uploads/1768260773026-about.png",
+      "alt": "about.png",
+      "thumb": "/uploads/about-1768260773036-thumb.jpg"
+    }
+  },
+  "products": {
+    "heading": "Masif panellerden üretilen yüzeyler.",
+    "intro": "Projenize uygun ağaç türü, kalite ve kalınlıkta masif panel temin eder; istenirse ölçülendirme, kenar işlemi ve uygulama hizmeti sunarız.",
+    "cards": [
+      {
+        "title": "Merdiven basamakları",
+        "desc": "Kaydırmaz finish, düzgün lif yönü ve dayanıklı yüzey.",
+        "details": "Basamak kalınlığı, rıht detayı, burun profili ve yüzey koruma seçimi; hem konforu hem dayanımı belirler. Keşif sonrası doğru lif yönü ve renk uyumuyla üretim yapılır.",
+        "image": {
+          "src": "/uploads/1768260703116-merdiven.png",
+          "alt": "merdiven.png",
+          "thumb": "/uploads/merdiven-1768260703119-thumb.jpg"
+        }
+      },
+      {
+        "title": "Mutfak tezgâhı",
+        "desc": "Yağ/vernik seçenekleriyle suya ve lekeye karşı koruma.",
+        "details": "Eviye/ocak kesimleri, birleşimler ve duvar payları önemlidir. Kullanım yoğunluğuna göre yağ, vernik veya özel finish seçenekleri önerilir.",
+        "image": {
+          "src": "/uploads/1768260740432-mutfak.png",
+          "alt": "mutfak.png",
+          "thumb": "/uploads/mutfak-1768260740434-thumb.jpg"
+        }
+      },
+      {
+        "title": "Masa tablaları",
+        "desc": "Masif görünüm, özel kenar profilleri ve ölçüler.",
+        "details": "Kenar profili, kalınlık, ayak bağlantı detayı ve yüzey koruma; masanın uzun ömürlü olmasını sağlar. Renk ve damar uyumu için panel seçimi yapılır.",
+        "image": {
+          "src": "/uploads/1768260750087-masa.png",
+          "alt": "masa.png",
+          "thumb": "/uploads/masa-1768260750089-thumb.jpg"
+        }
+      },
+      {
+        "title": "Sehpa / raf",
+        "desc": "Kompakt ölçülerde premium işçilik ve montaj.",
+        "details": "Duvar montajı, gizli bağlantılar ve köşe detayları ile temiz bir görünüm elde edilir. İsteğe göre mat/saten finish uygulanır.",
+        "image": {
+          "src": "/uploads/1768260756326-sehpa.png",
+          "alt": "sehpa.png",
+          "thumb": "/uploads/sehpa-1768260756328-thumb.jpg"
+        }
+      }
+    ]
+  },
+  "services": {
+    "heading": "Üretimden uygulamaya tek noktadan.",
+    "intro": "Ölçüye göre kesim, kenar işlemleri, yapıştırma, zımpara, yüzey koruma ve montaj dahil bütün süreçlerde destek.",
+    "steps": [
+      {
+        "key": "1",
+        "title": "Keşif & ölçü",
+        "desc": "Kullanım alanını netleştiririz."
+      },
+      {
+        "key": "2",
+        "title": "Panel seçimi",
+        "desc": "Ağaç, kalite ve kalınlık."
+      },
+      {
+        "key": "3",
+        "title": "İmalat",
+        "desc": "Kesim, işleme, finish."
+      },
+      {
+        "key": "4",
+        "title": "Teslim & montaj",
+        "desc": "Düzenli ve temiz uygulama."
+      }
+    ]
+  },
+  "calculator": {
+    "usageAreas": [
+      "Merdiven",
+      "Mutfak Tezgâhı",
+      "Masa",
+      "Sehpa",
+      "Raf / Duvar Paneli",
+      "Diğer"
+    ],
+    "woodTypes": [
+      "Meşe",
+      "Ceviz",
+      "Kayın",
+      "Dişbudak",
+      "Iroko",
+      "Çam",
+      "Diğer"
+    ],
+    "thicknessOptions": [
+      20,
+      30,
+      40,
+      50
+    ],
+    "thicknessDefaultMm": 30,
+    "thicknessMinMm": 12,
+    "thicknessMaxMm": 120
+  },
+  "gallery": {
+    "heading": "Uygulama örnekleri",
+    "intro": "Örnek görseller (demo). Kendi iş fotoğraflarınızı admin panelden yükleyip değiştirebilirsiniz.",
+    "images": [
+      {
+        "src": "/uploads/1768262159779-2.png",
+        "alt": "Ahşap tezgah detayı",
+        "thumb": "/uploads/2-1768262159784-thumb.jpg"
+      },
+      {
+        "src": "/uploads/1768262174265-ai-ac-k-uzak.png",
+        "alt": "Merdiven basamakları",
+        "thumb": "/uploads/ai-ac-k-uzak-1768262174267-thumb.jpg"
+      },
+      {
+        "src": "/uploads/1768262223833-ai-yak-n-caml-.png",
+        "alt": "Masa tablası yüzeyi",
+        "thumb": "/uploads/ai-yak-n-caml--1768262223835-thumb.jpg"
+      },
+      {
+        "src": "/uploads/1768262248265-masa-studio-c-al-s-ma-koltug-u-ve-bilgisayar.png",
+        "alt": "Masif panel damar yapısı",
+        "thumb": "/uploads/masa-studio-c-al-s-ma-koltug-u-ve-bilgisayar-1768262248267-thumb.jpg"
+      },
+      {
+        "src": "/uploads/1768262261474-sehpa-studio2.png",
+        "alt": "Sehpa üst yüzeyi",
+        "thumb": "/uploads/sehpa-studio2-1768262261475-thumb.jpg"
+      },
+      {
+        "src": "/uploads/1768262279701-masif_masa_instagram_1080x1080.png",
+        "alt": "Duvar paneli uygulaması",
+        "thumb": "/uploads/masif_masa_instagram_1080x1080-1768262279703-thumb.jpg"
+      }
+    ]
+  },
+  "serviceArea": {
+    "heading": "Servis bölgesi",
+    "intro": "Keşif, ölçü ve montaj süreçleri için servis verdiğimiz bölgeler.",
+    "mapEmbedUrl": "https://www.google.com/maps?q=ankara&output=embed",
+    "areas": [
+      "Ankara"
+    ]
+  },
+  "trust": {
+    "heading": "Neden biz?",
+    "items": [
+      {
+        "title": "Doğru panel seçimi",
+        "text": "Lif yönü, renk uyumu ve kalite sınıfına göre projeye uygun panel önerisi."
+      },
+      {
+        "title": "Temiz işçilik",
+        "text": "Kesim, kenar profili, zımpara ve finish süreçlerinde titiz uygulama."
+      },
+      {
+        "title": "Yüzey koruma",
+        "text": "Kullanıma göre yağ/vernik/özel finish seçenekleriyle dayanıklı sonuç."
+      },
+      {
+        "title": "Zamanında teslim",
+        "text": "Planlı üretim ve düzenli montaj süreci."
+      }
+    ]
+  },
+  "testimonials": {
+    "heading": "Müşteri yorumları",
+    "items": [
+      {
+        "name": "A. Y.",
+        "title": "Mutfak tezgâhı",
+        "text": "İşçilik gerçekten premium. Renk uyumu ve yüzey koruma konusunda çok iyi yönlendirdiler."
+      },
+      {
+        "name": "M. K.",
+        "title": "Merdiven projesi",
+        "text": "Ölçü ve montaj süreci sorunsuzdu. Basamaklar çok sağlam ve temiz görünüyor."
+      },
+      {
+        "name": "S. D.",
+        "title": "Masa tablası",
+        "text": "Kenar profili ve finish harika. Teslimat hızlı ve paketleme özenliydi."
+      }
+    ]
+  },
+  "faq": {
+    "heading": "Sık sorulan sorular",
+    "items": [
+      {
+        "q": "AB / BB / CC / CD kalite ne demek?",
+        "a": "Kalite sınıfı; budak, renk farklılığı ve yüzey homojenliği gibi görsel kriterleri ifade eder. AB/BB daha homojen; CC/CD daha doğal karakter ve varyasyon sunar."
+      },
+      {
+        "q": "Tezgâh için yağ mı vernik mi?",
+        "a": "Kullanım yoğunluğu, bakım tercihi ve leke/ısı dayanımı ihtiyacına göre değişir. Proje detaylarını aldıktan sonra uygun finish öneririz."
+      },
+      {
+        "q": "Ölçüleri bilmiyorum, yine de teklif alabilir miyim?",
+        "a": "Evet. Yaklaşık ölçü veya fotoğraf paylaşarak başlayabilirsiniz. Keşif/ölçü ile netleştiririz."
+      }
+    ]
+  },
+  "footer": {
+    "blurb": "Masif panel temini, üretim ve uygulama için hızlı teklif.",
+    "fineprint": "Mobil uyumlu • Hızlı • SEO uyumlu"
+  }
+}

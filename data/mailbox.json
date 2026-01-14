@@ -1,0 +1,9 @@
+{
+  "smtpHost": "",
+  "smtpPort": "",
+  "smtpSecure": false,
+  "smtpUser": "",
+  "smtpPass": "",
+  "mailFrom": "",
+  "mailTo": ""
+}

@@ -1,0 +1,19 @@
+[
+  {
+    "id": "e55a35f8-2eef-4377-940d-03a292de9710",
+    "type": "quote",
+    "email": "korty06@gmail.com",
+    "phone": "5060324040",
+    "payload": {
+      "usageArea": "Mutfak Tezgâhı",
+      "woodType": "Çam",
+      "quality": "BB",
+      "thicknessMm": 12,
+      "lengthMm": 1200,
+      "widthMm": 600,
+      "quantity": 1
+    },
+    "notes": "dfgdsgdfgdfgdfgdfgdfgdf",
+    "createdAt": "2026-01-13T14:40:02.261Z"
+  }
+]
