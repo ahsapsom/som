@@ -66,3 +66,4 @@ Notlar:
 - Cookie banner sadece “Kabul et” seçildiğinde Google Analytics script’i çalışır.
 - Analitik için `GA_MEASUREMENT_ID` env veya `content.seo.gaMeasurementId` alanını ayarlayın.
 - Arka plan parallax metni: `TextureParallax` katmanı `public/textures/wood-layer-*.svg` dosyalarını kullanır; kendi PNG’lerini bu klasöre atıp isimleriyle değiştirerek arka planı özelleştirebilirsin.
+# trigger
