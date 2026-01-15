@@ -22,10 +22,11 @@ function getRequiredEnv(key: string) {
   return value;
 }
 
-export function verifyAdminPassword(password: string) {
-  const expected = getRequiredEnv("ADMIN_PASSWORD");
+export function verifyAdminPassword(password: string, expected?: string) {
+  const resolved = expected ?? process.env.ADMIN_PASSWORD;
+  if (!resolved) return false;
   const a = Buffer.from(password);
-  const b = Buffer.from(expected);
+  const b = Buffer.from(resolved);
   if (a.length !== b.length) return false;
   return crypto.timingSafeEqual(a, b);
 }
@@ -76,4 +77,3 @@ export function getCookieValue(cookieHeader: string | null, name: string) {
   }
   return undefined;
 }
-

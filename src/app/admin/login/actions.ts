@@ -11,6 +11,17 @@ const LoginSchema = z.object({
 });
 
 export async function loginAction(formData: FormData) {
+  console.log(
+    "ENV_HAS_ADMIN_PASSWORD",
+    Object.prototype.hasOwnProperty.call(process.env, "ADMIN_PASSWORD"),
+  );
+  console.log(
+    "ENV_ADMIN_PASSWORD_LEN",
+    process.env.ADMIN_PASSWORD?.length ?? 0,
+  );
+  if (!process.env.ADMIN_PASSWORD) {
+    redirect("/admin/login?error=missing-env");
+  }
   const parsed = LoginSchema.safeParse({
     password: String(formData.get("password") ?? ""),
   });
@@ -18,7 +29,7 @@ export async function loginAction(formData: FormData) {
     redirect("/admin/login?error=required");
   }
 
-  if (!verifyAdminPassword(parsed.data.password)) {
+  if (!verifyAdminPassword(parsed.data.password, process.env.ADMIN_PASSWORD)) {
     redirect("/admin/login?error=invalid");
   }
 
