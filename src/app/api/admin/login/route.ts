@@ -3,17 +3,16 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import {
   createAdminSessionToken,
-  getAdminPassword,
   verifyAdminPassword,
 } from "@/lib/adminAuth";
 import { getRedirectUrl } from "@/lib/requestBaseUrl";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function logAdminEnvIfEnabled() {
+function logAdminEnvIfEnabled(adminPassword: string | undefined) {
   if (process.env.DEBUG_ADMIN_ENV !== "1") return;
-  const adminPassword = getAdminPassword();
   console.log("ENV_HAS_ADMIN_PASSWORD", Boolean(adminPassword));
   console.log("ENV_ADMIN_PASSWORD_LEN", adminPassword?.length ?? 0);
   const buildId =
@@ -22,9 +21,9 @@ function logAdminEnvIfEnabled() {
 }
 
 export async function POST(req: NextRequest) {
-  logAdminEnvIfEnabled();
-  const adminPassword = getAdminPassword();
-  if (!adminPassword) {
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD?.trim();
+  logAdminEnvIfEnabled(ADMIN_PASSWORD);
+  if (!ADMIN_PASSWORD) {
     return NextResponse.redirect(
       getRedirectUrl(req, "/admin/login?error=missing-env"),
       307,
@@ -39,7 +38,7 @@ export async function POST(req: NextRequest) {
       307,
     );
   }
-  if (!verifyAdminPassword(password, adminPassword)) {
+  if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
     return NextResponse.redirect(
       getRedirectUrl(req, "/admin/login?error=invalid"),
       307,
