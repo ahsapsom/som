@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import type { SiteContent } from "@/lib/contentSchema";
+import { normalizeImageSrc } from "@/lib/imagePath";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
@@ -60,6 +61,7 @@ export function ParallaxHero(props: {
   const videoSrc = props.hero.heroVideo?.url
     ? getVideoSrc(props.hero.heroVideo.url)
     : null;
+  const heroImageSrc = normalizeImageSrc(props.hero.heroImage?.src);
 
   async function onQuickSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -135,7 +137,7 @@ export function ParallaxHero(props: {
           className="grain absolute -inset-24 opacity-30"
           style={{ transform: `translate3d(0, ${offset}px, 0)` }}
         />
-        {props.hero.heroImage?.src ? (
+        {heroImageSrc ? (
           <div
             className="absolute -inset-16 opacity-30"
             style={{
@@ -143,12 +145,12 @@ export function ParallaxHero(props: {
             }}
           >
             <Image
-              src={props.hero.heroImage.src}
-              alt={props.hero.heroImage.alt}
+              src={heroImageSrc}
+              alt={props.hero.heroImage?.alt ?? ""}
               fill
               className="object-cover"
               priority
-              unoptimized={props.hero.heroImage.src.endsWith(".svg")}
+              unoptimized={heroImageSrc.endsWith(".svg")}
             />
           </div>
         ) : null}

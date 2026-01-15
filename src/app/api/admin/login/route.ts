@@ -1,11 +1,12 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 import {
   createAdminSessionToken,
   getAdminPassword,
   verifyAdminPassword,
 } from "@/lib/adminAuth";
+import { getRedirectUrl } from "@/lib/requestBaseUrl";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -20,12 +21,13 @@ function logAdminEnvIfEnabled() {
   console.log("ADMIN_BUILD_ID", buildId);
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   logAdminEnvIfEnabled();
   const adminPassword = getAdminPassword();
   if (!adminPassword) {
     return NextResponse.redirect(
-      new URL("/admin/login?error=missing-env", req.url),
+      getRedirectUrl(req, "/admin/login?error=missing-env"),
+      307,
     );
   }
 
@@ -33,12 +35,14 @@ export async function POST(req: Request) {
   const password = String(form.get("password") ?? "");
   if (!password.trim()) {
     return NextResponse.redirect(
-      new URL("/admin/login?error=required", req.url),
+      getRedirectUrl(req, "/admin/login?error=required"),
+      307,
     );
   }
   if (!verifyAdminPassword(password, adminPassword)) {
     return NextResponse.redirect(
-      new URL("/admin/login?error=invalid", req.url),
+      getRedirectUrl(req, "/admin/login?error=invalid"),
+      307,
     );
   }
 
@@ -51,5 +55,5 @@ export async function POST(req: Request) {
     maxAge: 60 * 60 * 24 * 7,
   });
 
-  return NextResponse.redirect(new URL("/admin", req.url));
+  return NextResponse.redirect(getRedirectUrl(req, "/admin"), 307);
 }

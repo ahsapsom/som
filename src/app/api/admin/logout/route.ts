@@ -1,10 +1,12 @@
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+
+import { getRedirectUrl } from "@/lib/requestBaseUrl";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const cookieStore = await cookies();
   cookieStore.set("admin_session", "", {
     httpOnly: true,
@@ -14,5 +16,5 @@ export async function POST(req: Request) {
     maxAge: 0,
   });
 
-  return NextResponse.redirect(new URL("/admin/login", req.url));
+  return NextResponse.redirect(getRedirectUrl(req, "/admin/login"), 307);
 }

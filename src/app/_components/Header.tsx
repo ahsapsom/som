@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
 
+import { normalizeImageSrc } from "@/lib/imagePath";
+
 const nav = [
   { href: "#hakkimizda", label: "Hakkımızda" },
   { href: "#urunler", label: "Ürünler" },
@@ -26,6 +28,7 @@ export function Header(props: {
   };
 }) {
   const [open, setOpen] = useState(false);
+  const logoSrc = normalizeImageSrc(props.brand.logo);
   const phoneHref = useMemo(
     () => `tel:${props.brand.phone.replaceAll(" ", "")}`,
     [props.brand.phone],
@@ -65,9 +68,9 @@ export function Header(props: {
             aria-label={`${props.brand.name} ana sayfa`}
             onClick={handleLogoClick}
           >
-            {props.brand.logo ? (
+            {logoSrc ? (
               <Image
-                src={props.brand.logo}
+                src={logoSrc}
                 alt={`${props.brand.name} logo`}
                 width={props.brand.logoMaxWidth ?? 160}
                 height={props.brand.logoHeight ?? 64}
@@ -84,7 +87,7 @@ export function Header(props: {
                 }}
                 className="headerLogo"
                 priority
-                unoptimized={props.brand.logo.endsWith(".svg")}
+                unoptimized={logoSrc.endsWith(".svg")}
               />
             ) : (
               <span className="font-[family-name:var(--font-display)] text-lg tracking-[0.35em]">

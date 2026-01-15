@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { SiteContent } from "@/lib/contentSchema";
 import type { LeadEntry } from "@/lib/leadStore";
+import { normalizeImageSrc } from "@/lib/imagePath";
 
 type Status =
   | { kind: "idle" }
@@ -504,6 +505,8 @@ export function AdminApp() {
   }
 
   if (!content) return null;
+  const brandLogoSrc = normalizeImageSrc(content.brand.logo);
+  const heroImageSrc = normalizeImageSrc(content.hero.heroImage?.src);
 
   return (
     <div className="grid gap-6">
@@ -576,14 +579,14 @@ export function AdminApp() {
             <p className="text-xs uppercase tracking-[0.3em] text-foreground/70">
               Firma logosu
             </p>
-            {content.brand.logo ? (
+            {brandLogoSrc ? (
               <Image
-                src={content.brand.logo}
+                src={brandLogoSrc}
                 alt={`${content.brand.name} logo`}
                 width={220}
                 height={88}
                 className="h-20 w-auto object-contain"
-                unoptimized={content.brand.logo.endsWith(".svg")}
+                unoptimized={brandLogoSrc.endsWith(".svg")}
               />
             ) : (
               <div className="h-20 w-full rounded-xl bg-surface/70" />
@@ -1120,14 +1123,14 @@ export function AdminApp() {
           </div>
           <div className="grid gap-3 md:grid-cols-2 md:items-start">
             <div className="rounded-2xl border border-border/70 bg-surface/40 p-3">
-              {content.hero.heroImage?.src ? (
+              {heroImageSrc ? (
                 <Image
-                  src={content.hero.heroImage.src}
-                  alt={content.hero.heroImage.alt}
+                  src={heroImageSrc}
+                  alt={content.hero.heroImage?.alt ?? ""}
                   width={1200}
                   height={800}
                   className="h-56 w-full rounded-xl object-cover"
-                  unoptimized={content.hero.heroImage.src.endsWith(".svg")}
+                  unoptimized={heroImageSrc.endsWith(".svg")}
                 />
               ) : (
                 <div className="h-56 rounded-xl bg-surface/60" />

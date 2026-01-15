@@ -8,10 +8,12 @@ import { ProductGrid } from "@/app/_components/ProductGrid";
 import { QuoteCalculator } from "@/app/_components/QuoteCalculator";
 import { TextureParallax } from "@/app/_components/TextureParallax";
 import { getContent } from "@/lib/content";
+import { normalizeImageSrc } from "@/lib/imagePath";
 
 export default async function Home() {
   const content = await getContent();
   const siteUrl = process.env.SITE_URL ?? "https://example.com";
+  const aboutImageSrc = normalizeImageSrc(content.about.image?.src);
 
   return (
     <>
@@ -43,14 +45,14 @@ export default async function Home() {
               </ul>
             </div>
             <div className="rounded-3xl border border-border/70 bg-card/50 p-3 backdrop-blur">
-              {content.about.image ? (
+              {aboutImageSrc ? (
                 <Image
-                  src={content.about.image.src}
-                  alt={content.about.image.alt}
+                  src={aboutImageSrc}
+                  alt={content.about.image?.alt ?? ""}
                   width={1200}
                   height={900}
                   className="h-72 w-full rounded-2xl object-cover sm:h-96"
-                  unoptimized={content.about.image.src.endsWith(".svg")}
+                  unoptimized={aboutImageSrc.endsWith(".svg")}
                 />
               ) : (
                 <div className="h-72 w-full rounded-2xl bg-surface/60 sm:h-96" />
@@ -198,21 +200,25 @@ export default async function Home() {
           </div>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {content.gallery.images.map((img) => (
-              <div
-                key={img.src}
-                className="overflow-hidden rounded-3xl border border-border/70 bg-card/40"
-              >
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  width={1200}
-                  height={900}
-                  className="h-52 w-full object-cover"
-                  unoptimized={img.src.endsWith(".svg")}
-                />
-              </div>
-            ))}
+            {content.gallery.images.map((img) => {
+              const imgSrc = normalizeImageSrc(img.src);
+              if (!imgSrc) return null;
+              return (
+                <div
+                  key={imgSrc}
+                  className="overflow-hidden rounded-3xl border border-border/70 bg-card/40"
+                >
+                  <Image
+                    src={imgSrc}
+                    alt={img.alt}
+                    width={1200}
+                    height={900}
+                    className="h-52 w-full object-cover"
+                    unoptimized={imgSrc.endsWith(".svg")}
+                  />
+                </div>
+              );
+            })}
           </div>
         </section>
 

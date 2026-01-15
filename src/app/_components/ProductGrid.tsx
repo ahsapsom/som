@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 
+import { normalizeImageSrc } from "@/lib/imagePath";
+
 type Card = {
   title: string;
   desc: string;
@@ -20,6 +22,7 @@ export function ProductGrid(props: {
     () => (openIndex === null ? null : props.cards[openIndex] ?? null),
     [openIndex, props.cards],
   );
+  const activeImageSrc = normalizeImageSrc(active?.image?.src);
 
   return (
     <>
@@ -34,34 +37,37 @@ export function ProductGrid(props: {
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {props.cards.map((c, idx) => (
-            <button
-              key={`${c.title}-${idx}`}
-              type="button"
-              className="focus-ring text-left rounded-3xl border border-border/70 bg-card/50 p-6 backdrop-blur hover:bg-card/70"
-              onClick={() => setOpenIndex(idx)}
-            >
-              {c.image ? (
-                <div className="mb-4 overflow-hidden rounded-2xl border border-border/60">
-                  <Image
-                    src={c.image.thumb ?? c.image.src}
-                    alt={c.image.alt}
-                    width={1200}
-                    height={800}
-                    className="h-36 w-full object-cover"
-                    unoptimized={(c.image.thumb ?? c.image.src).endsWith(".svg")}
-                  />
-                </div>
-              ) : null}
-              <p className="font-[family-name:var(--font-display)] text-xl">
-                {c.title}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-foreground/75">
-                {c.desc}
-              </p>
-              <p className="mt-3 text-xs text-accent/80">Detayları gör</p>
-            </button>
-          ))}
+          {props.cards.map((c, idx) => {
+            const cardImageSrc = normalizeImageSrc(c.image?.thumb ?? c.image?.src);
+            return (
+              <button
+                key={`${c.title}-${idx}`}
+                type="button"
+                className="focus-ring text-left rounded-3xl border border-border/70 bg-card/50 p-6 backdrop-blur hover:bg-card/70"
+                onClick={() => setOpenIndex(idx)}
+              >
+                {cardImageSrc ? (
+                  <div className="mb-4 overflow-hidden rounded-2xl border border-border/60">
+                    <Image
+                      src={cardImageSrc}
+                      alt={c.image?.alt ?? ""}
+                      width={1200}
+                      height={800}
+                      className="h-36 w-full object-cover"
+                      unoptimized={cardImageSrc.endsWith(".svg")}
+                    />
+                  </div>
+                ) : null}
+                <p className="font-[family-name:var(--font-display)] text-xl">
+                  {c.title}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-foreground/75">
+                  {c.desc}
+                </p>
+                <p className="mt-3 text-xs text-accent/80">Detayları gör</p>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -96,15 +102,15 @@ export function ProductGrid(props: {
               </button>
             </div>
 
-            {active.image ? (
+            {activeImageSrc ? (
               <div className="mt-6 overflow-hidden rounded-3xl border border-border/60">
                 <Image
-                  src={active.image.src}
-                  alt={active.image.alt}
+                  src={activeImageSrc}
+                  alt={active?.image?.alt ?? ""}
                   width={1200}
                   height={900}
                   className="h-64 w-full object-cover sm:h-80"
-                  unoptimized={active.image.src.endsWith(".svg")}
+                  unoptimized={activeImageSrc.endsWith(".svg")}
                 />
               </div>
             ) : null}
@@ -137,4 +143,3 @@ export function ProductGrid(props: {
     </>
   );
 }
-
