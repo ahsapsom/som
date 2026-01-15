@@ -22,8 +22,12 @@ function getRequiredEnv(key: string) {
   return value;
 }
 
-export function verifyAdminPassword(password: string, expected?: string) {
-  const resolved = expected ?? process.env.ADMIN_PASSWORD;
+export function getAdminPassword() {
+  return process.env.ADMIN_PASSWORD?.trim() || null;
+}
+
+export function verifyAdminPassword(password: string, expected?: string | null) {
+  const resolved = expected ?? getAdminPassword();
   if (!resolved) return false;
   const a = Buffer.from(password);
   const b = Buffer.from(resolved);

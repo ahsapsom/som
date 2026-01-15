@@ -2,6 +2,9 @@ import { getCookieValue, verifyAdminSessionToken } from "@/lib/adminAuth";
 import { SiteContentSchema } from "@/lib/contentSchema";
 import { readContent, writeContent } from "@/lib/contentStore";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 function requireAdmin(req: Request) {
   const token = getCookieValue(req.headers.get("cookie"), "admin_session");
   if (!verifyAdminSessionToken(token)) {

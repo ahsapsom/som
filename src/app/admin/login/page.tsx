@@ -1,10 +1,13 @@
-import { loginAction } from "@/app/admin/login/actions";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function AdminLoginPage(props: {
   searchParams?: Promise<{ error?: string }>;
 }) {
   const sp = (await props.searchParams) ?? {};
   const error = sp.error;
+  const buildId =
+    process.env.NEXT_PUBLIC_BUILD_ID ?? process.env.BUILD_SHA ?? "local";
   return (
     <main className="min-h-screen bg-background">
       <div className="relative overflow-hidden">
@@ -30,7 +33,7 @@ export default async function AdminLoginPage(props: {
               </div>
             ) : null}
 
-            <form action={loginAction} className="mt-8 grid gap-4">
+            <form action="/api/admin/login" method="post" className="mt-8 grid gap-4">
               <div className="grid gap-2">
                 <label
                   htmlFor="password"
@@ -53,10 +56,11 @@ export default async function AdminLoginPage(props: {
                 Giriş
               </button>
               <p className="text-xs text-muted">
-                Not: Şifre `.env.local` içindeki `ADMIN_PASSWORD` ile kontrol
-                edilir.
+                Not: Şifre, sunucudaki ADMIN_PASSWORD ortam değişkeni ile
+                doğrulanır.
               </p>
             </form>
+            <p className="mt-6 text-xs text-muted">Build: {buildId}</p>
           </div>
         </div>
       </div>
