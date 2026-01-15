@@ -18,7 +18,7 @@
 /out/
 
 # admin uploads
-/public/uploads/
+
 
 # production
 /build
