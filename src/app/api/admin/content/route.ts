@@ -1,6 +1,7 @@
 import { Readable } from "node:stream";
 
 import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetParametersCommand, SSMClient } from "@aws-sdk/client-ssm";
 
 import { getCookieValue, verifyAdminSessionToken } from "@/lib/adminAuth";
 import { SiteContentSchema } from "@/lib/contentSchema";
@@ -13,6 +14,13 @@ const s3 = new S3Client({
   region: process.env.AWS_REGION || "eu-central-1",
 });
 
+declare global {
+  // eslint-disable-next-line no-var
+  var __adminContentTargetPromise:
+    | Promise<{ bucket: string; key: string }>
+    | undefined;
+}
+
 async function requireAdmin(req: Request) {
   const token = getCookieValue(req.headers.get("cookie"), "admin");
   if (!(await verifyAdminSessionToken(token))) {
@@ -24,11 +32,68 @@ async function requireAdmin(req: Request) {
   return null;
 }
 
-function getS3Target() {
+function getRegion() {
+  return (
+    process.env.AWS_REGION ??
+    process.env.AWS_DEFAULT_REGION ??
+    "eu-central-1"
+  );
+}
+
+function getAppId() {
+  return (
+    process.env.AMPLIFY_APP_ID ??
+    process.env.AWS_AMPLIFY_APP_ID ??
+    "d3b993v3dgpwkg"
+  );
+}
+
+function getBranch() {
+  return (
+    process.env.AMPLIFY_BRANCH ??
+    process.env.AWS_AMPLIFY_BRANCH ??
+    "main"
+  );
+}
+
+async function readSsmTarget(): Promise<{ bucket: string; key: string }> {
+  const appId = getAppId();
+  const branch = getBranch();
+  const names = [
+    `/amplify/${appId}/${branch}/ADMIN_CONTENT_BUCKET`,
+    `/amplify/${appId}/${branch}/ADMIN_CONTENT_KEY`,
+  ];
+  const client = new SSMClient({ region: getRegion() });
+  const response = await client.send(
+    new GetParametersCommand({ Names: names, WithDecryption: true }),
+  );
+  const paramMap = new Map(
+    (response.Parameters ?? []).map((param) => [
+      param.Name ?? "",
+      param.Value ?? "",
+    ]),
+  );
+  return {
+    bucket: (paramMap.get(names[0]) ?? "").trim(),
+    key: (paramMap.get(names[1]) ?? "").trim(),
+  };
+}
+
+async function getS3Target() {
   const bucket = process.env.ADMIN_CONTENT_BUCKET;
   const key = process.env.ADMIN_CONTENT_KEY;
   if (!bucket || !key) {
-    throw new Error("Missing ADMIN_CONTENT_BUCKET or ADMIN_CONTENT_KEY");
+    if (!globalThis.__adminContentTargetPromise) {
+      globalThis.__adminContentTargetPromise = readSsmTarget().catch(() => ({
+        bucket: "",
+        key: "",
+      }));
+    }
+    const ssmTarget = await globalThis.__adminContentTargetPromise;
+    if (!ssmTarget.bucket || !ssmTarget.key) {
+      throw new Error("Missing ADMIN_CONTENT_BUCKET or ADMIN_CONTENT_KEY");
+    }
+    return ssmTarget;
   }
   return { bucket, key };
 }
@@ -84,7 +149,7 @@ export async function GET(req: Request) {
   const auth = await requireAdmin(req);
   if (auth) return auth;
   try {
-    const { bucket, key } = getS3Target();
+    const { bucket, key } = await getS3Target();
     const response = await s3.send(
       new GetObjectCommand({ Bucket: bucket, Key: key }),
     );
@@ -136,7 +201,7 @@ export async function PUT(req: Request) {
     if (!parsed.success) {
       return Response.json({ ok: false, error: "bad-request" }, { status: 400 });
     }
-    const { bucket, key } = getS3Target();
+    const { bucket, key } = await getS3Target();
     await s3.send(
       new PutObjectCommand({
         Bucket: bucket,
