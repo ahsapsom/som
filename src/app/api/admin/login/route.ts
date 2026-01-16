@@ -26,10 +26,14 @@ function logAdminEnvIfEnabled(
 }
 
 export async function POST(req: NextRequest) {
-  const ADMIN_PASSWORD = process.env["ADMIN_PASSWORD"]?.trim();
-  const ADMIN_SECRET = process.env["ADMIN_SECRET"];
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD?.trim();
+  const ADMIN_SECRET = process.env.ADMIN_SECRET;
   logAdminEnvIfEnabled(ADMIN_PASSWORD, ADMIN_SECRET);
   if (!ADMIN_PASSWORD || !ADMIN_SECRET) {
+    const missing = [];
+    if (!ADMIN_PASSWORD) missing.push("ADMIN_PASSWORD");
+    if (!ADMIN_SECRET) missing.push("ADMIN_SECRET");
+    console.log("ADMIN_ENV_MISSING", missing.join(",") || "unknown");
     return NextResponse.redirect(
       getRedirectUrl(req, "/admin/login?error=missing-env"),
       307,
