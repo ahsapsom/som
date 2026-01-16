@@ -11,8 +11,13 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 function getPublicOrigin(req: NextRequest) {
-  const origin = new URL(req.url).origin;
-  return origin.includes("localhost") ? "https://somahsap.com" : origin;
+  const protoHeader = req.headers.get("x-forwarded-proto") ?? "https";
+  const proto = protoHeader.split(",")[0]?.trim() || "https";
+  const hostHeader =
+    req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  const host = hostHeader?.split(",")[0]?.trim();
+  if (host) return `${proto}://${host}`;
+  return "https://somahsap.com";
 }
 
 function logAdminEnvIfEnabled(
