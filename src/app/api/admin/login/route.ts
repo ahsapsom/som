@@ -5,10 +5,17 @@ import {
   createAdminSessionToken,
   verifyAdminPassword,
 } from "@/lib/adminAuth";
-import { getRedirectUrl } from "@/lib/requestBaseUrl";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+function getBaseUrl(req: Request) {
+  const proto = req.headers.get("x-forwarded-proto") ?? "https";
+  const host =
+    req.headers.get("x-forwarded-host") ?? req.headers.get("host");
+  return `${proto}://${host}`;
+}
 
 function logAdminEnvIfEnabled(
   adminPassword: string | undefined,
@@ -28,28 +35,31 @@ export async function POST(req: NextRequest) {
   const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
   const ADMIN_SECRET = process.env.ADMIN_SECRET;
   logAdminEnvIfEnabled(ADMIN_PASSWORD, ADMIN_SECRET);
+  const base = getBaseUrl(req);
   if (!ADMIN_PASSWORD || !ADMIN_SECRET) {
-    const missing = [];
+    const missing: string[] = [];
     if (!ADMIN_PASSWORD) missing.push("ADMIN_PASSWORD");
     if (!ADMIN_SECRET) missing.push("ADMIN_SECRET");
     console.log("ADMIN_ENV_MISSING", missing.join(",") || "unknown");
-    return Response.redirect(
-      getRedirectUrl(req, "/admin/login?error=missing-env"),
+    const res = Response.redirect(
+      new URL("/admin/login?error=missing-env", base),
       307,
     );
+    res.headers.set("x-admin-missing", missing.join(","));
+    return res;
   }
 
   const form = await req.formData();
   const password = String(form.get("password") ?? "");
   if (!password.trim()) {
     return Response.redirect(
-      getRedirectUrl(req, "/admin/login?error=required"),
+      new URL("/admin/login?error=required", base),
       307,
     );
   }
   if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
     return Response.redirect(
-      getRedirectUrl(req, "/admin/login?error=invalid-password"),
+      new URL("/admin/login?error=invalid-password", base),
       307,
     );
   }
@@ -63,5 +73,5 @@ export async function POST(req: NextRequest) {
     maxAge: 60 * 60 * 24 * 7,
   });
 
-  return Response.redirect(getRedirectUrl(req, "/admin"), 307);
+  return Response.redirect(new URL("/admin", base), 307);
 }
