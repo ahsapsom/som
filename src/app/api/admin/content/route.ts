@@ -102,8 +102,28 @@ export async function GET(req: Request) {
     if (isNoSuchKey(err)) {
       return Response.json({ ok: true, content: {} });
     }
+    const debug = process.env.DEBUG_ADMIN_ENV === "1";
+    const msg = err instanceof Error
+      ? err.message.slice(0, 120)
+      : String(err).slice(0, 120);
     console.error("[admin-content] GET exception", err);
-    return Response.json({ ok: false, error: "exception" }, { status: 500 });
+    return Response.json(
+      {
+        ok: false,
+        error: "exception",
+        name: err instanceof Error ? err.name : "Error",
+        message: debug ? (err instanceof Error ? err.message : String(err)) : undefined,
+      },
+      {
+        status: 500,
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+          "x-admin-error": "content-get-exception",
+          "x-admin-error-msg": msg,
+          "cache-control": "no-store",
+        },
+      },
+    );
   }
 }
 
