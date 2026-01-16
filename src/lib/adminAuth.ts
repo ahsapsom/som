@@ -1,5 +1,7 @@
 import crypto from "node:crypto";
 
+import { getAdminEnv } from "@/lib/adminEnv";
+
 type SessionPayload = { v: 1; iat: number; exp: number };
 
 function base64UrlEncode(input: string | Buffer) {
@@ -24,24 +26,8 @@ export function verifyAdminPassword(password: string, expected: string) {
 }
 
 function getAdminSecret() {
-  const direct = process.env.ADMIN_SECRET;
-  if (direct) return direct;
-  const secretsRaw = (process.env as Record<string, unknown>).secrets;
-  if (!secretsRaw) return null;
-  if (typeof secretsRaw === "string") {
-    try {
-      const parsed = JSON.parse(secretsRaw) as Record<string, unknown>;
-      const value = parsed.ADMIN_SECRET;
-      return typeof value === "string" ? value : null;
-    } catch {
-      return null;
-    }
-  }
-  if (typeof secretsRaw === "object") {
-    const value = (secretsRaw as Record<string, unknown>).ADMIN_SECRET;
-    return typeof value === "string" ? value : null;
-  }
-  return null;
+  const { ADMIN_SECRET } = getAdminEnv();
+  return ADMIN_SECRET || null;
 }
 
 function sign(input: string, secret: string) {
