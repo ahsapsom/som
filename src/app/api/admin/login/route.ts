@@ -11,19 +11,25 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function logAdminEnvIfEnabled(adminPassword: string | undefined) {
+function logAdminEnvIfEnabled(
+  adminPassword: string | undefined,
+  adminSecret: string | undefined,
+) {
   if (process.env.DEBUG_ADMIN_ENV !== "1") return;
   console.log("ENV_HAS_ADMIN_PASSWORD", Boolean(adminPassword));
   console.log("ENV_ADMIN_PASSWORD_LEN", adminPassword?.length ?? 0);
+  console.log("ENV_HAS_ADMIN_SECRET", Boolean(adminSecret));
+  console.log("ENV_ADMIN_SECRET_LEN", adminSecret?.length ?? 0);
   const buildId =
     process.env.NEXT_PUBLIC_BUILD_ID ?? process.env.BUILD_SHA ?? "";
   console.log("ADMIN_BUILD_ID", buildId);
 }
 
 export async function POST(req: NextRequest) {
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD?.trim();
-  logAdminEnvIfEnabled(ADMIN_PASSWORD);
-  if (!ADMIN_PASSWORD) {
+  const ADMIN_PASSWORD = process.env["ADMIN_PASSWORD"]?.trim();
+  const ADMIN_SECRET = process.env["ADMIN_SECRET"];
+  logAdminEnvIfEnabled(ADMIN_PASSWORD, ADMIN_SECRET);
+  if (!ADMIN_PASSWORD || !ADMIN_SECRET) {
     return NextResponse.redirect(
       getRedirectUrl(req, "/admin/login?error=missing-env"),
       307,

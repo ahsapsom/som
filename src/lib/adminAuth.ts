@@ -16,14 +16,8 @@ function base64UrlDecode(input: string) {
   return Buffer.from(b64, "base64").toString("utf8");
 }
 
-function getRequiredEnv(key: string) {
-  const value = process.env[key];
-  if (!value) throw new Error(`Missing env: ${key}`);
-  return value;
-}
-
 export function getAdminPassword() {
-  return process.env.ADMIN_PASSWORD?.trim() || null;
+  return process.env["ADMIN_PASSWORD"]?.trim() || null;
 }
 
 export function verifyAdminPassword(password: string, expected?: string | null) {
@@ -36,9 +30,10 @@ export function verifyAdminPassword(password: string, expected?: string | null) 
 }
 
 function sign(input: string) {
-  const secret = getRequiredEnv("ADMIN_SECRET");
+  const ADMIN_SECRET = process.env["ADMIN_SECRET"];
+  if (!ADMIN_SECRET) throw new Error("Missing env: ADMIN_SECRET");
   return base64UrlEncode(
-    crypto.createHmac("sha256", secret).update(input).digest(),
+    crypto.createHmac("sha256", ADMIN_SECRET).update(input).digest(),
   );
 }
 
