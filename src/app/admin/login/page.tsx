@@ -27,6 +27,8 @@ export default async function AdminLoginPage(props: {
               <div className="mt-6 rounded-2xl border border-danger/25 bg-danger/10 p-4 text-sm">
                 {error === "invalid"
                   ? "Şifre hatalı."
+                  : error === "invalid-password"
+                  ? "Şifre hatalı."
                   : error === "missing-env"
                     ? "Sunucu ayarında ADMIN_PASSWORD eksik."
                     : "Şifre gerekli."}

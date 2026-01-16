@@ -1,12 +1,10 @@
 import { cookies } from "next/headers";
-import { NextResponse, type NextRequest } from "next/server";
+import { type NextRequest } from "next/server";
 
 import {
   createAdminSessionToken,
   verifyAdminPassword,
 } from "@/lib/adminAuth";
-import { getRedirectUrl } from "@/lib/requestBaseUrl";
-
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -26,7 +24,7 @@ function logAdminEnvIfEnabled(
 }
 
 export async function POST(req: NextRequest) {
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD?.trim();
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
   const ADMIN_SECRET = process.env.ADMIN_SECRET;
   logAdminEnvIfEnabled(ADMIN_PASSWORD, ADMIN_SECRET);
   if (!ADMIN_PASSWORD || !ADMIN_SECRET) {
@@ -34,8 +32,8 @@ export async function POST(req: NextRequest) {
     if (!ADMIN_PASSWORD) missing.push("ADMIN_PASSWORD");
     if (!ADMIN_SECRET) missing.push("ADMIN_SECRET");
     console.log("ADMIN_ENV_MISSING", missing.join(",") || "unknown");
-    return NextResponse.redirect(
-      getRedirectUrl(req, "/admin/login?error=missing-env"),
+    return Response.redirect(
+      new URL("/admin/login?error=missing-env", req.url),
       307,
     );
   }
@@ -43,14 +41,14 @@ export async function POST(req: NextRequest) {
   const form = await req.formData();
   const password = String(form.get("password") ?? "");
   if (!password.trim()) {
-    return NextResponse.redirect(
-      getRedirectUrl(req, "/admin/login?error=required"),
+    return Response.redirect(
+      new URL("/admin/login?error=required", req.url),
       307,
     );
   }
   if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
-    return NextResponse.redirect(
-      getRedirectUrl(req, "/admin/login?error=invalid"),
+    return Response.redirect(
+      new URL("/admin/login?error=invalid-password", req.url),
       307,
     );
   }
@@ -64,5 +62,5 @@ export async function POST(req: NextRequest) {
     maxAge: 60 * 60 * 24 * 7,
   });
 
-  return NextResponse.redirect(getRedirectUrl(req, "/admin"), 307);
+  return Response.redirect(new URL("/admin", req.url), 307);
 }

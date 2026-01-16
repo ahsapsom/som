@@ -1,13 +1,18 @@
 import { cookies } from "next/headers";
-import { NextResponse, type NextRequest } from "next/server";
-
-import { getRedirectUrl } from "@/lib/requestBaseUrl";
+import { type NextRequest } from "next/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function POST(req: NextRequest) {
+  const ADMIN_SECRET = process.env.ADMIN_SECRET;
+  if (!ADMIN_SECRET) {
+    return Response.redirect(
+      new URL("/admin/login?error=missing-env", req.url),
+      307,
+    );
+  }
   const cookieStore = await cookies();
   cookieStore.set("admin_session", "", {
     httpOnly: true,
@@ -17,5 +22,5 @@ export async function POST(req: NextRequest) {
     maxAge: 0,
   });
 
-  return NextResponse.redirect(getRedirectUrl(req, "/admin/login"), 307);
+  return Response.redirect(new URL("/admin/login", req.url), 307);
 }
