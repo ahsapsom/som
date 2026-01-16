@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import { type NextRequest } from "next/server";
+
+import { getAdminSecrets } from "@/lib/adminSecrets";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,8 +17,8 @@ function getBaseUrl(req: Request) {
 
 export async function POST(req: NextRequest) {
   const base = getBaseUrl(req);
-  const ADMIN_SECRET = process.env.ADMIN_SECRET;
-  if (!ADMIN_SECRET) {
+  const { adminSecret } = await getAdminSecrets();
+  if (!adminSecret) {
     return Response.redirect(
       new URL("/admin/login?error=missing-env", base),
       307,

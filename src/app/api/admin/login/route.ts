@@ -5,6 +5,7 @@ import {
   createAdminSessionToken,
   verifyAdminPassword,
 } from "@/lib/adminAuth";
+import { getAdminSecrets } from "@/lib/adminSecrets";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -34,25 +35,26 @@ function logAdminEnvIfEnabled(
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    const base = getBaseUrl(req);
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    const adminSecret = process.env.ADMIN_SECRET;
-    logAdminEnvIfEnabled(adminPassword, adminSecret);
-    if (!adminPassword || !adminSecret) {
-      const missing = [
-        !adminPassword ? "ADMIN_PASSWORD" : null,
-        !adminSecret ? "ADMIN_SECRET" : null,
-      ].filter(Boolean);
-      console.log("ADMIN_ENV_MISSING", missing.join(",") || "unknown");
-      const res = Response.redirect(
-        new URL("/admin/login?error=missing-env", base),
-        307,
-      );
-      res.headers.set("x-admin-missing", missing.join(","));
-      return res;
-    }
+  const base = getBaseUrl(req);
+  const { adminPassword, adminSecret } = await getAdminSecrets();
+  logAdminEnvIfEnabled(adminPassword, adminSecret);
+  if (!adminPassword || !adminSecret) {
+    const missing = [
+      !adminPassword ? "ADMIN_PASSWORD" : null,
+      !adminSecret ? "ADMIN_SECRET" : null,
+    ].filter(Boolean);
+    console.log("ADMIN_ENV_MISSING", missing.join(",") || "unknown");
+    const location = new URL("/admin/login?error=missing-env", base).toString();
+    return new Response(null, {
+      status: 307,
+      headers: {
+        Location: location,
+        "x-admin-missing": missing.join(","),
+      },
+    });
+  }
 
+  try {
     const form = await req.formData();
     const password = String(form.get("password") ?? "");
     if (!password.trim()) {
@@ -69,7 +71,7 @@ export async function POST(req: NextRequest) {
     }
 
     const cookieStore = await cookies();
-    cookieStore.set("admin_session", createAdminSessionToken(), {
+    cookieStore.set("admin_session", createAdminSessionToken(adminSecret), {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
@@ -79,14 +81,10 @@ export async function POST(req: NextRequest) {
 
     return Response.redirect(new URL("/admin", base), 307);
   } catch (error) {
-    return new Response(null, {
-      status: 500,
-      headers: {
-        "x-admin-error": "login-exception",
-        "x-admin-error-msg": String(
-          error instanceof Error ? error.message : error,
-        ),
-      },
-    });
+    console.error("ADMIN_LOGIN_FAILED", error);
+    return Response.redirect(
+      new URL("/admin/login?error=missing-env", base),
+      307,
+    );
   }
 }

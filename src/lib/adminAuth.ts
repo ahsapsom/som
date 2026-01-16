@@ -16,28 +16,20 @@ function base64UrlDecode(input: string) {
   return Buffer.from(b64, "base64").toString("utf8");
 }
 
-export function getAdminPassword() {
-  return process.env.ADMIN_PASSWORD?.trim() || null;
-}
-
-export function verifyAdminPassword(password: string, expected?: string | null) {
-  const resolved = expected ?? getAdminPassword();
-  if (!resolved) return false;
+export function verifyAdminPassword(password: string, expected: string) {
   const a = Buffer.from(password);
-  const b = Buffer.from(resolved);
+  const b = Buffer.from(expected);
   if (a.length !== b.length) return false;
   return crypto.timingSafeEqual(a, b);
 }
 
-function sign(input: string) {
-  const ADMIN_SECRET = process.env.ADMIN_SECRET;
-  if (!ADMIN_SECRET) throw new Error("Missing env: ADMIN_SECRET");
+function sign(input: string, secret: string) {
   return base64UrlEncode(
-    crypto.createHmac("sha256", ADMIN_SECRET).update(input).digest(),
+    crypto.createHmac("sha256", secret).update(input).digest(),
   );
 }
 
-export function createAdminSessionToken(days = 7) {
+export function createAdminSessionToken(secret: string, days = 7) {
   const now = Date.now();
   const payload: SessionPayload = {
     v: 1,
@@ -45,15 +37,18 @@ export function createAdminSessionToken(days = 7) {
     exp: now + days * 24 * 60 * 60 * 1000,
   };
   const data = base64UrlEncode(JSON.stringify(payload));
-  const sig = sign(data);
+  const sig = sign(data, secret);
   return `${data}.${sig}`;
 }
 
-export function verifyAdminSessionToken(token: string | undefined | null) {
+export function verifyAdminSessionToken(
+  token: string | undefined | null,
+  secret: string,
+) {
   if (!token) return false;
   const [data, sig] = token.split(".");
   if (!data || !sig) return false;
-  const expected = sign(data);
+  const expected = sign(data, secret);
   const a = Buffer.from(sig);
   const b = Buffer.from(expected);
   if (a.length !== b.length) return false;
