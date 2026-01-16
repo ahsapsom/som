@@ -13,6 +13,8 @@ type AdminSecrets = {
   source: "secretsmanager";
 };
 
+const EMPTY_SECRETS: AdminSecrets = { source: "secretsmanager" };
+
 let cached: AdminSecrets | null = null;
 let cachedAt = 0;
 let inflight: Promise<AdminSecrets> | null = null;
@@ -27,7 +29,7 @@ function getRegion() {
 
 function parseSecret(secretString: string | undefined): AdminSecrets {
   if (!secretString) {
-    return { source: "secretsmanager" };
+    return EMPTY_SECRETS;
   }
   try {
     const parsed = JSON.parse(secretString) as Record<string, unknown>;
@@ -43,7 +45,7 @@ function parseSecret(secretString: string | undefined): AdminSecrets {
       source: "secretsmanager",
     };
   } catch {
-    return { source: "secretsmanager" };
+    return EMPTY_SECRETS;
   }
 }
 
@@ -73,7 +75,7 @@ export async function getAdminSecrets(): Promise<AdminSecrets> {
     })
     .catch((error) => {
       console.error("ADMIN_SECRETS_FETCH_FAILED", error);
-      return { source: "secretsmanager" };
+      return EMPTY_SECRETS;
     })
     .finally(() => {
       inflight = null;
