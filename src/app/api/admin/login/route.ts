@@ -5,6 +5,7 @@ import {
   createAdminSessionToken,
   verifyAdminPassword,
 } from "@/lib/adminAuth";
+import { getRedirectUrl } from "@/lib/requestBaseUrl";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
     if (!ADMIN_SECRET) missing.push("ADMIN_SECRET");
     console.log("ADMIN_ENV_MISSING", missing.join(",") || "unknown");
     return Response.redirect(
-      new URL("/admin/login?error=missing-env", req.url),
+      getRedirectUrl(req, "/admin/login?error=missing-env"),
       307,
     );
   }
@@ -42,13 +43,13 @@ export async function POST(req: NextRequest) {
   const password = String(form.get("password") ?? "");
   if (!password.trim()) {
     return Response.redirect(
-      new URL("/admin/login?error=required", req.url),
+      getRedirectUrl(req, "/admin/login?error=required"),
       307,
     );
   }
   if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
     return Response.redirect(
-      new URL("/admin/login?error=invalid-password", req.url),
+      getRedirectUrl(req, "/admin/login?error=invalid-password"),
       307,
     );
   }
@@ -62,5 +63,5 @@ export async function POST(req: NextRequest) {
     maxAge: 60 * 60 * 24 * 7,
   });
 
-  return Response.redirect(new URL("/admin", req.url), 307);
+  return Response.redirect(getRedirectUrl(req, "/admin"), 307);
 }
