@@ -8,7 +8,9 @@ function getBaseUrl(req: Request) {
   const proto = req.headers.get("x-forwarded-proto") ?? "https";
   const host =
     req.headers.get("x-forwarded-host") ?? req.headers.get("host");
-  return `${proto}://${host}`;
+  if (host) return `${proto}://${host}`;
+  if (process.env.SITE_URL) return process.env.SITE_URL;
+  return "https://example.com";
 }
 
 export async function POST(req: NextRequest) {
