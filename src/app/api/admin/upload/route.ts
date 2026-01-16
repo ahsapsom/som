@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 function requireAdmin(req: Request) {
-  const token = getCookieValue(req.headers.get("cookie"), "admin_session");
+  const token = getCookieValue(req.headers.get("cookie"), "admin");
   if (!verifyAdminSessionToken(token)) {
     return Response.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }

@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-import { type NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 
 import {
   createAdminSessionToken,
@@ -34,7 +33,7 @@ export async function POST(req: NextRequest) {
       if (!ADMIN_PASSWORD) missing.push("ADMIN_PASSWORD");
       if (!ADMIN_SECRET) missing.push("ADMIN_SECRET");
       console.log("ADMIN_ENV_MISSING", missing.join(",") || "unknown");
-      const res = Response.redirect(
+      const res = NextResponse.redirect(
         new URL("/admin/login?error=missing-env", req.url),
         307,
       );
@@ -44,37 +43,39 @@ export async function POST(req: NextRequest) {
     const form = await req.formData();
     const password = String(form.get("password") ?? "");
     if (!password.trim()) {
-      return Response.redirect(
+      return NextResponse.redirect(
         new URL("/admin/login?error=required", req.url),
         307,
       );
     }
     if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
-      return Response.redirect(
+      return NextResponse.redirect(
         new URL("/admin/login?error=invalid-password", req.url),
         307,
       );
     }
 
-    const cookieStore = await cookies();
-    cookieStore.set("admin_session", createAdminSessionToken(), {
+    const token = createAdminSessionToken();
+    const res = NextResponse.redirect(new URL("/admin", req.url), 307);
+    res.cookies.set("admin", token, {
       httpOnly: true,
       sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
-
-    return Response.redirect(new URL("/admin", req.url), 307);
+    return res;
   } catch (error) {
-    return new Response(null, {
-      status: 500,
-      headers: {
-        "x-admin-error": "login-exception",
-        "x-admin-error-msg": String(
-          error instanceof Error ? error.message : error,
-        ),
-      },
-    });
+    console.error("ADMIN_LOGIN_FAILED", error);
+    const res = NextResponse.redirect(
+      new URL("/admin/login?error=missing-env", req.url),
+      307,
+    );
+    res.headers.set("x-admin-error", "login-exception");
+    res.headers.set(
+      "x-admin-error-msg",
+      String(error instanceof Error ? error.message : error),
+    );
+    return res;
   }
 }
