@@ -25,8 +25,8 @@ export function verifyAdminPassword(password: string, expected: string) {
   return crypto.timingSafeEqual(a, b);
 }
 
-function getAdminSecret() {
-  const { ADMIN_SECRET } = getAdminEnv();
+async function getAdminSecret() {
+  const { ADMIN_SECRET } = await getAdminEnv();
   return ADMIN_SECRET || null;
 }
 
@@ -36,8 +36,8 @@ function sign(input: string, secret: string) {
   );
 }
 
-export function createAdminSessionToken(days = 7) {
-  const secret = getAdminSecret();
+export async function createAdminSessionToken(days = 7) {
+  const secret = await getAdminSecret();
   if (!secret) throw new Error("Missing env: ADMIN_SECRET");
   const now = Date.now();
   const payload: SessionPayload = {
@@ -50,9 +50,11 @@ export function createAdminSessionToken(days = 7) {
   return `${data}.${sig}`;
 }
 
-export function verifyAdminSessionToken(token: string | undefined | null) {
+export async function verifyAdminSessionToken(
+  token: string | undefined | null,
+) {
   if (!token) return false;
-  const secret = getAdminSecret();
+  const secret = await getAdminSecret();
   if (!secret) return false;
   const [data, sig] = token.split(".");
   if (!data || !sig) return false;

@@ -10,7 +10,7 @@ export const revalidate = 0;
 export default async function AdminPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("admin")?.value;
-  if (!verifyAdminSessionToken(token)) {
+  if (!(await verifyAdminSessionToken(token))) {
     redirect("/admin/login");
   }
   const buildId =

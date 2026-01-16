@@ -17,7 +17,7 @@ function getPublicOrigin(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const { ADMIN_SECRET } = getAdminEnv();
+  const { ADMIN_SECRET } = await getAdminEnv();
   if (!ADMIN_SECRET) {
     return NextResponse.redirect(
       new URL("/admin/login?error=missing-env", getPublicOrigin(req)),

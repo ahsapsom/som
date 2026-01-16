@@ -36,7 +36,7 @@ function logAdminEnvIfEnabled(
 
 export async function POST(req: NextRequest) {
   try {
-    const { ADMIN_PASSWORD, ADMIN_SECRET } = getAdminEnv();
+    const { ADMIN_PASSWORD, ADMIN_SECRET } = await getAdminEnv();
     logAdminEnvIfEnabled(ADMIN_PASSWORD, ADMIN_SECRET);
     const origin = getPublicOrigin(req);
     if (!ADMIN_PASSWORD || !ADMIN_SECRET) {
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const token = createAdminSessionToken();
+    const token = await createAdminSessionToken();
     const res = NextResponse.redirect(new URL("/admin", origin), 307);
     res.cookies.set("admin", token, {
       httpOnly: true,
