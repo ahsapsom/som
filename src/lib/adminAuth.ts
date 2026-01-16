@@ -23,13 +23,19 @@ export function verifyAdminPassword(password: string, expected: string) {
   return crypto.timingSafeEqual(a, b);
 }
 
+function getAdminSecret() {
+  return process.env.ADMIN_SECRET ?? null;
+}
+
 function sign(input: string, secret: string) {
   return base64UrlEncode(
     crypto.createHmac("sha256", secret).update(input).digest(),
   );
 }
 
-export function createAdminSessionToken(secret: string, days = 7) {
+export function createAdminSessionToken(days = 7) {
+  const secret = getAdminSecret();
+  if (!secret) throw new Error("Missing env: ADMIN_SECRET");
   const now = Date.now();
   const payload: SessionPayload = {
     v: 1,
@@ -41,11 +47,10 @@ export function createAdminSessionToken(secret: string, days = 7) {
   return `${data}.${sig}`;
 }
 
-export function verifyAdminSessionToken(
-  token: string | undefined | null,
-  secret: string,
-) {
+export function verifyAdminSessionToken(token: string | undefined | null) {
   if (!token) return false;
+  const secret = getAdminSecret();
+  if (!secret) return false;
   const [data, sig] = token.split(".");
   if (!data || !sig) return false;
   const expected = sign(data, secret);

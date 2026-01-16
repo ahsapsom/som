@@ -30,7 +30,7 @@ export default async function AdminLoginPage(props: {
                   : error === "invalid-password"
                   ? "Şifre hatalı."
                   : error === "missing-env"
-                    ? "Sunucu ayarları eksik (ADMIN_PASSWORD/ADMIN_SECRET)."
+                    ? "Sistem yapılandırması eksik (ADMIN env)."
                     : "Şifre gerekli."}
               </div>
             ) : null}

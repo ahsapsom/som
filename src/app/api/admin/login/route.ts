@@ -5,20 +5,10 @@ import {
   createAdminSessionToken,
   verifyAdminPassword,
 } from "@/lib/adminAuth";
-import { getAdminSecrets } from "@/lib/adminSecrets";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-function getBaseUrl(req: Request) {
-  const proto = req.headers.get("x-forwarded-proto") ?? "https";
-  const host =
-    req.headers.get("x-forwarded-host") ?? req.headers.get("host");
-  if (host) return `${proto}://${host}`;
-  if (process.env.SITE_URL) return process.env.SITE_URL;
-  return "https://example.com";
-}
 
 function logAdminEnvIfEnabled(
   adminPassword: string | undefined,
@@ -35,43 +25,39 @@ function logAdminEnvIfEnabled(
 }
 
 export async function POST(req: NextRequest) {
-  const base = getBaseUrl(req);
-  const { adminPassword, adminSecret } = await getAdminSecrets();
-  logAdminEnvIfEnabled(adminPassword, adminSecret);
-  if (!adminPassword || !adminSecret) {
-    const missing = [
-      !adminPassword ? "ADMIN_PASSWORD" : null,
-      !adminSecret ? "ADMIN_SECRET" : null,
-    ].filter(Boolean);
-    console.log("ADMIN_ENV_MISSING", missing.join(",") || "unknown");
-    const location = new URL("/admin/login?error=missing-env", base).toString();
-    return new Response(null, {
-      status: 307,
-      headers: {
-        Location: location,
-        "x-admin-missing": missing.join(","),
-      },
-    });
-  }
-
   try {
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "";
+    const ADMIN_SECRET = process.env.ADMIN_SECRET ?? "";
+    logAdminEnvIfEnabled(ADMIN_PASSWORD, ADMIN_SECRET);
+    if (!ADMIN_PASSWORD || !ADMIN_SECRET) {
+      const missing = [];
+      if (!ADMIN_PASSWORD) missing.push("ADMIN_PASSWORD");
+      if (!ADMIN_SECRET) missing.push("ADMIN_SECRET");
+      console.log("ADMIN_ENV_MISSING", missing.join(",") || "unknown");
+      const res = Response.redirect(
+        new URL("/admin/login?error=missing-env", req.url),
+        307,
+      );
+      res.headers.set("x-admin-missing", missing.join(","));
+      return res;
+    }
     const form = await req.formData();
     const password = String(form.get("password") ?? "");
     if (!password.trim()) {
       return Response.redirect(
-        new URL("/admin/login?error=required", base),
+        new URL("/admin/login?error=required", req.url),
         307,
       );
     }
-    if (!verifyAdminPassword(password, adminPassword)) {
+    if (!verifyAdminPassword(password, ADMIN_PASSWORD)) {
       return Response.redirect(
-        new URL("/admin/login?error=invalid-password", base),
+        new URL("/admin/login?error=invalid-password", req.url),
         307,
       );
     }
 
     const cookieStore = await cookies();
-    cookieStore.set("admin_session", createAdminSessionToken(adminSecret), {
+    cookieStore.set("admin_session", createAdminSessionToken(), {
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
@@ -79,12 +65,16 @@ export async function POST(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    return Response.redirect(new URL("/admin", base), 307);
+    return Response.redirect(new URL("/admin", req.url), 307);
   } catch (error) {
-    console.error("ADMIN_LOGIN_FAILED", error);
-    return Response.redirect(
-      new URL("/admin/login?error=missing-env", base),
-      307,
-    );
+    return new Response(null, {
+      status: 500,
+      headers: {
+        "x-admin-error": "login-exception",
+        "x-admin-error-msg": String(
+          error instanceof Error ? error.message : error,
+        ),
+      },
+    });
   }
 }

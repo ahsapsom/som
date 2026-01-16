@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 
 import { AdminApp } from "@/app/admin/AdminApp";
 import { verifyAdminSessionToken } from "@/lib/adminAuth";
-import { getAdminSecrets } from "@/lib/adminSecrets";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -11,8 +10,7 @@ export const revalidate = 0;
 export default async function AdminPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("admin_session")?.value;
-  const { adminSecret } = await getAdminSecrets();
-  if (!adminSecret || !verifyAdminSessionToken(token, adminSecret)) {
+  if (!verifyAdminSessionToken(token)) {
     redirect("/admin/login");
   }
   const buildId =
