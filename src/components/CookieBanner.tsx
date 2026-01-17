@@ -159,32 +159,40 @@ export default function CookieBanner() {
       <div
         className={[
           "pointer-events-auto rounded-2xl border border-border/70 bg-card/90 shadow-xl backdrop-blur",
-          settings ? "p-4" : "p-2",
+          settings ? "p-4" : "p-1",
         ].join(" ")}
       >
         {!settings ? (
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              type="button"
-              className="focus-ring flex-1 rounded-xl bg-accent px-4 py-2 text-sm font-medium text-black hover:bg-accent-2"
-              onClick={acceptAll}
+          <div className="flex flex-col gap-1">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                className="focus-ring flex-1 rounded-xl bg-accent px-3 py-1 text-xs font-medium text-black hover:bg-accent-2"
+                onClick={acceptAll}
+              >
+                Kabul Et
+              </button>
+              <button
+                type="button"
+                className="focus-ring flex-1 rounded-xl border border-border/80 bg-surface/60 px-3 py-1 text-xs hover:bg-surface/80"
+                onClick={rejectAll}
+              >
+                Reddet
+              </button>
+              <button
+                type="button"
+                className="focus-ring flex-1 rounded-xl border border-border/80 bg-surface/60 px-3 py-1 text-xs hover:bg-surface/80"
+                onClick={openSettings}
+              >
+                Ayarlar <span aria-hidden="true">⚙</span>
+              </button>
+            </div>
+            <Link
+              href="/cookies"
+              className="text-[0.55rem] leading-none text-foreground/70 underline decoration-border underline-offset-2 hover:text-foreground"
             >
-              Kabul Et
-            </button>
-            <button
-              type="button"
-              className="focus-ring flex-1 rounded-xl border border-border/80 bg-surface/60 px-4 py-2 text-sm hover:bg-surface/80"
-              onClick={rejectAll}
-            >
-              Reddet
-            </button>
-            <button
-              type="button"
-              className="focus-ring flex-1 rounded-xl border border-border/80 bg-surface/60 px-4 py-2 text-sm hover:bg-surface/80"
-              onClick={openSettings}
-            >
-              Ayarlar <span aria-hidden="true">⚙</span>
-            </button>
+              Çerez Politikasını
+            </Link>
           </div>
         ) : (
           <div className="grid gap-4 text-sm text-foreground/80">
