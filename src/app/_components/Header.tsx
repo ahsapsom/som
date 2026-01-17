@@ -70,7 +70,7 @@ export function Header(props: {
   }
 
   return (
-    <header className="relative transition-all duration-200 md:fixed md:inset-x-0 md:top-0 md:z-50">
+    <header className="fixed inset-x-0 top-0 z-50 transition-all duration-200">
       <div
         className={`relative mx-auto flex max-w-9xl items-start gap-4 px-4 ${
           compact ? "py-1" : "py-2"
@@ -79,7 +79,9 @@ export function Header(props: {
         <div className="flex flex-1 items-center gap-4 md:justify-center md:gap-6">
           <Link
             href="/"
-            className="focus-ring inline-flex items-center gap-3 self-start"
+            className={`focus-ring inline-flex items-center gap-3 self-start ${
+              compact ? "headerBrandCompact" : ""
+            }`}
             aria-label={`${props.brand.name} ana sayfa`}
             onClick={handleLogoClick}
           >

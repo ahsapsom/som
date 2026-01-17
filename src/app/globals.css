@@ -289,6 +289,16 @@ body::-webkit-scrollbar-thumb {
   max-width: 220px;
 }
 
+.headerBrandCompact {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .headerBrandCompact {
+    display: inline-flex;
+  }
+}
+
 .headerLogoCompact {
   max-height: 52px;
   max-width: 180px;
