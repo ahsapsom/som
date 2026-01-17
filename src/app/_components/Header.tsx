@@ -70,7 +70,7 @@ export function Header(props: {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 transition-all duration-200">
+    <header className="relative transition-all duration-200 md:fixed md:inset-x-0 md:top-0 md:z-50">
       <div
         className={`relative mx-auto flex max-w-9xl items-start gap-4 px-4 ${
           compact ? "py-1" : "py-2"
