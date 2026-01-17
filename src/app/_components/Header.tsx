@@ -28,6 +28,7 @@ export function Header(props: {
   };
 }) {
   const [open, setOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
   const logoSrc = normalizeImageSrc(props.brand.logo);
   const phoneHref = useMemo(
     () => `tel:${props.brand.phone.replaceAll(" ", "")}`,
@@ -42,6 +43,16 @@ export function Header(props: {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const next = window.scrollY > 24;
+      setCompact((prev) => (prev === next ? prev : next));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   function handleLogoClick(e: MouseEvent<HTMLAnchorElement>) {
     if (
@@ -59,8 +70,12 @@ export function Header(props: {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
-      <div className="relative mx-auto flex max-w-9xl items-center gap-4 px-4 py-4 sm:px-6">
+    <header className="fixed inset-x-0 top-0 z-50 transition-all duration-200">
+      <div
+        className={`relative mx-auto flex max-w-9xl items-center gap-4 px-4 ${
+          compact ? "py-2" : "py-4"
+        } sm:px-6`}
+      >
         <div className="flex flex-1 items-center gap-4 md:justify-center md:gap-6">
           <Link
             href="/"
@@ -85,7 +100,7 @@ export function Header(props: {
                     ? `${props.brand.logoMaxWidth}px`
                     : undefined,
                 }}
-                className="headerLogo"
+                className={`headerLogo ${compact ? "headerLogoCompact" : ""}`}
                 priority
                 unoptimized={logoSrc.endsWith(".svg")}
               />

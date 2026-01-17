@@ -289,6 +289,11 @@ body::-webkit-scrollbar-thumb {
   max-width: 220px;
 }
 
+.headerLogoCompact {
+  max-height: 52px;
+  max-width: 180px;
+}
+
 .woodCTA:hover {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), #d4b287 80%);
   border-color: rgba(60, 30, 10, 0.6);
